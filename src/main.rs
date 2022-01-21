@@ -7,6 +7,7 @@ use tui::widgets::{List, ListState, ListItem, Tabs};
 use tui::layout::{Rect, Constraint, Layout, Direction};
 use tui::text::Spans;
 use tui::style::{Color, Style};
+use std::str::Lines;
 
 fn main() -> Result<(), io::Error> {
     let stdout = io::stdout().into_raw_mode()?;
@@ -68,3 +69,29 @@ fn generate_block(title: &'static str, borders: bool) -> Block {
     return Block::default().title(title)
 }
 
+
+struct CpuInfo {
+    model_name: String,
+    vendor_id: String,
+    cores: i8,
+    processors: i8,
+
+}
+
+impl Default for CpuInfo {
+    fn default() -> Self {
+        match std::fs::read_to_string("/proc/cpuinfo") {
+            Ok(file) => {
+                let v: Vec<String> = file.lines().collect();
+                
+                Self {
+                    model_name: v.iter().filter(|line| line == "model name".to_string()).take(1),
+                    vendor_id: "testing".to_string(), 
+                    cores: 8,
+                    processors: 8,
+                }
+            }
+        }
+    }
+
+}
