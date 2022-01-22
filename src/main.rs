@@ -12,8 +12,6 @@ fn main() -> Result<(), io::Error> {
     let stdout = io::stdout().into_raw_mode()?;
     let backend = TermionBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
-    let cpuinfo = CpuInfo::default();
-    println!("{:?}", cpuinfo);
     run(&mut terminal).unwrap();
 
     Ok(())
@@ -83,16 +81,29 @@ impl Default for CpuInfo {
     fn default() -> Self {
         match std::fs::read_to_string("/proc/cpuinfo") {
             Ok(file) => {
-                let processors = file.lines().filter(|f| f.contains("processor")).count();
-                let vendor_id = file.lines().filter(|f| f.contains("vendor_id")).map(|f| f.to_string()).take(1).collect::<String>();
-                let model_name = file.lines().filter(|f| f.contains("model name")).map(|f| f.to_string()).take(1).collect::<String>();
-                let cores = file.lines().filter(|f| f.contains("cpu cores")).count();
-                let mut v = vec![];
-                for line in file.lines() {
-                    if line.starts_with("model name") || line.starts_with("vendor_id") || line.starts_with("cpu cores") {
-                        v.push(line)
-                    }
-                };
+                let processors = file
+                    .lines()
+                    .filter(|f| f.contains("processor"))
+                    .count();
+
+                let vendor_id = file
+                    .lines()
+                    .filter(|f| f.contains("vendor_id"))
+                    .map(|f| f.to_string())
+                    .take(1)
+                    .collect::<String>();
+
+                let model_name = file
+                    .lines()
+                    .filter(|f| f.contains("model name"))
+                    .map(|f| f.to_string())
+                    .take(1)
+                    .collect::<String>();
+
+                let cores = file
+                    .lines()
+                    .filter(|f| f.contains("cpu cores"))
+                    .count();
 
                 Self {
                     model_name, 
