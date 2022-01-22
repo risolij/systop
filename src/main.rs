@@ -83,16 +83,23 @@ impl ReadFile {
 	    	        contents: f,
 	    	    }
 	        },
-            Err(e) => {
-                println!("uh oh {}", e);
-                std::process::exit(1);
+            Err(_) => {
+                Self {
+                    state: Some(Box::new(NotRead {})),
+                    contents: "failure".to_string(),
+                }
             }
 	    }
     }
 }
 
+struct NotRead {}
+impl State for NotRead {}
+
 struct Read {}
 impl State for Read {}
+
+
 
   
 
