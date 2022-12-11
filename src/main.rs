@@ -1,5 +1,6 @@
-use iced::widget::{button, column, text, Column};
-use iced::{Alignment, Element, Sandbox, Settings};
+use iced::widget::{button, column, text, Column, container};
+use iced::{Alignment, Length, Element, Sandbox, Settings};
+use iced::theme::Theme;
 
 struct Counter {
     value: i32
@@ -12,19 +13,28 @@ impl Sandbox for Counter {
         Self { value: 0 }
     }
 
+    fn theme(&self) -> Theme {
+        Theme::Dark
+    }
+
     fn title(&self) -> String {
         String::from("Counter - Req")
     }
 
     fn view(&self) -> Element<Self::Message> {
-        column![
+        let content = column![
             button("+").on_press(Message::IncrementPressed),
             text(self.value).size(50),
             button("-").on_press(Message::DecrementPressed),
         ]
-        .padding(20)
-        .align_items(Alignment::Center)
-        .into()
+        .align_items(Alignment::Center);
+
+        container(content)
+            .width(Length::Fill)
+            .height(Length::Fill)
+            .center_x()
+            .center_y()
+            .into()
     }
 
     fn update(&mut self, message: Self::Message) {
@@ -42,7 +52,7 @@ pub enum Message {
     DecrementPressed,
 }
 
-fn main() {
-    Counter::run(Settings::default());
+fn main() -> iced::Result {
+    Counter::run(Settings::default())
 
 }

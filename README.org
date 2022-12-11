@@ -1,2 +1,1 @@
-* systop
-systop will be a simple tui monitoring tool which I build up over time.
+* Who knows what this will be
