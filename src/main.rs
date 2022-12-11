@@ -2,57 +2,59 @@ use iced::widget::{button, column, text, Column, container};
 use iced::{Alignment, Length, Element, Sandbox, Settings};
 use iced::theme::Theme;
 
-struct Counter {
-    value: i32
+struct Themer {
+    theme: Theme
 }
 
-impl Sandbox for Counter {
+impl Sandbox for Themer {
     type Message = Message;
     
     fn new() -> Self {
-        Self { value: 0 }
+        Self { theme: Theme::Dark }
     }
 
     fn theme(&self) -> Theme {
-        Theme::Dark
+        self.theme.clone()
     }
 
     fn title(&self) -> String {
-        String::from("Counter - Req")
+        String::from("Themer - Req")
     }
 
     fn view(&self) -> Element<Self::Message> {
-        let content = column![
-            button("+").on_press(Message::IncrementPressed),
-            text(self.value).size(50),
-            button("-").on_press(Message::DecrementPressed),
+        let theming = column![
+            button("TESTING").on_press(Message::ThemePressed),
+            text("Change Theme").size(50)
         ]
         .align_items(Alignment::Center);
 
-        container(content)
+
+        container(theming)
             .width(Length::Fill)
             .height(Length::Fill)
             .center_x()
             .center_y()
             .into()
+
+
     }
 
     fn update(&mut self, message: Self::Message) {
-        match message {
-            Message::IncrementPressed => self.value += 1,
-            Message::DecrementPressed => self.value -= 1,
-        }
+        match self.theme {
+            Theme::Light => self.theme = Theme::Dark,
+            Theme::Dark => self.theme = Theme::Light,
+            _ => self.theme = Theme::Light,
+        };
     }
 }
 
 
 #[derive(Debug, Clone, Copy)]
 pub enum Message {
-    IncrementPressed,
-    DecrementPressed,
+    ThemePressed,
 }
 
 fn main() -> iced::Result {
-    Counter::run(Settings::default())
+    Themer::run(Settings::default())
 
 }
