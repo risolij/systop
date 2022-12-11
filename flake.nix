@@ -16,21 +16,40 @@
         pkgs = import nixpkgs {
           inherit system overlays;
         };
-
-        lib = nixpkgs.lib;
+        libPath = with pkgs; lib.makeLibraryPath [
+          libxkbcommon
+          libGL
+          wayland
+          xorg.libX11
+          xorg.libxcb
+          xorg.libXrandr
+          xorg.libXi
+        ];
       in
       with pkgs;
       {
         devShell = mkShell {
           buildInputs = [
-            pkg-config
-            gcc
-            openssl
+            ## pkg-config
+            ## gcc
+            ## openssl
+            ## cmake
+            ## fontconfig
+            libxkbcommon
+            libGL
+            wayland
+            xorg.libX11
+            xorg.libxcb
+            xorg.libXrandr
+            xorg.libXi
             rust-analyzer
-            (rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override {
-              extensions = ["rust-src"];
-            }))
+            (rust-bin.selectLatestNightlyWith (
+              toolchain: toolchain.default.override {
+                extensions = ["rust-src"];
+              }
+            ))
           ];
+          LD_LIBRARY_PATH = libPath;
         };
       }
     );
